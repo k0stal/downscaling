@@ -1,0 +1,6 @@
+__pycache__/
+*logs
+*.DB_Store
+data/
+venv/
+.ipynb_checkpoints/
