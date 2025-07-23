@@ -28,6 +28,9 @@ Use a Browser on your local machine to go to:
 http://localhost:${port}
 "
 
+# move to downscale directory
+cd ..
+
 # Load Jupyter + Python module from /mnt
 ml IPython/8.28.0-GCCcore-13.3.0
 
@@ -38,7 +41,11 @@ if [ ! -d "./venv" ]; then
     ${PYTHON_PATH} -m venv venv
     source venv/bin/activate
     pip install --upgrade pip
-    pip install notebook ipykernel
+    pip install notebook
+    pip install ipykernel
+    pip install --index-url https://test.pypi.org/simple/ \
+            --extra-index-url https://pypi.org/simple \
+            cddlt
     python -m ipykernel install --user --name=venv --display-name "Python (venv)"
 fi
 
