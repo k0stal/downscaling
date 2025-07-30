@@ -4,28 +4,24 @@
 export XDG_RUNTIME_DIR=""
 
 # Random port
-port=$(shuf -i8000-9999 -n1)
+nb_port=$(shuf -i8000-9999 -n1)
+tb_port=$(shuf -i8000-9999 -n1)
 
 # Get node and user info
 node=$(hostname -s)
 user=$(whoami)
 
+logdir="./notebooks/logs"
+
 # Echo SSH tunnel info
 echo -e "
-MacOS or Linux terminal command to create your ssh tunnel:
-ssh -N -L ${port}:${node}:${port} ${user}@login.rci.cvut.cz
+Notebook:
+ssh -N -L ${nb_port}:${node}:${nb_port} ${user}@login.rci.cvut.cz
+http://localhost:${nb_port}
 
-MobaXterm info:
-
-Forwarded port: same as remote port
-Remote server: ${node}
-Remote port: ${port}
-SSH server: login.rci.cvut.cz
-SSH login: ${user}
-SSH port: 22
-
-Use a Browser on your local machine to go to:
-http://localhost:${port}
+Tensorboard:
+ssh -N -L ${tb_port}:${node}:${tb_port} ${user}@login.rci.cvut.cz
+http://localhost:${tb_port}
 "
 
 # move to downscale directory
@@ -51,5 +47,10 @@ fi
 
 source venv/bin/activate
 
+# Start TensorBoard
+tensorboard --logdir=${logdir} --port=${tb_port} --bind_all &
+
+sleep 5
+
 # Start Jupyter Notebook
-jupyter notebook --no-browser --port=${port} --ip=0.0.0.0
+jupyter notebook --no-browser --port=${nb_port} --ip=0.0.0.0 &
